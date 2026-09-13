@@ -65,10 +65,23 @@
     .ev-positivo { background-color: rgba(22, 101, 52, 0.2); border-color: #22c55e; }
     .ev-negativo { background-color: rgba(153, 27, 27, 0.2); border-color: #ef4444; }
     
-    .res-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.92rem; }
+    .res-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.90rem; }
     .res-value { font-weight: 900; font-size: 1.15rem; }
     
-    .veredito-badge { text-align: center; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 1.05rem; margin-top: 14px; text-transform: uppercase; }
+    .target-box {
+      background: #18181b;
+      border: 1.5px solid #FACC15;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .target-box .target-label { font-size: 0.85rem; font-weight: 700; color: #FACC15; }
+    .target-box .target-val { font-size: 1.25rem; font-weight: 900; color: #FFFFFF; }
+
+    .veredito-badge { text-align: center; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 1.05rem; margin-top: 10px; text-transform: uppercase; }
     .badge-pos { background: #15803d; color: #ffffff; }
     .badge-neg { background: #b91c1c; color: #ffffff; }
     .explicacao { font-size: 0.82rem; color: #cbd5e1; margin-top: 12px; line-height: 1.45; }
@@ -122,7 +135,7 @@
       setTimeout(() => {
         loading.style.display = 'none';
         executarAnalise(oddA, oddB);
-      }, 1200);
+      }, 1000);
     }
 
     function executarAnalise(oddA, oddB) {
@@ -136,16 +149,33 @@
       const probRealA = probA / somaMercado;
       const oddJusta = 1 / probRealA;
 
-      const ehPositivo = oddA >= oddJusta;
-      const classe = ehPositivo ? 'ev-positivo' : 'ev-negativo';
-      const badgeClasse = ehPositivo ? 'badge-pos' : 'badge-neg';
-      const statusTexto = ehPositivo ? '✅ VALE A PENA (+EV)' : '❌ TÁ CARO (-EV)';
+      // Odd ideal para ter margem real de lucro sustentável (+3% a +5% de valor esperado)
+      const oddIdealLucro = oddJusta * 1.04; 
+
+      const ehLucrativo = oddA >= oddIdealLucro;
+      const ehEmpate = oddA >= oddJusta && !ehLucrativo;
+
+      let classe = 'ev-negativo';
+      let badgeClasse = 'badge-neg';
+      let statusTexto = '❌ TÁ CARO (-EV)';
+
+      if (ehLucrativo) {
+        classe = 'ev-positivo';
+        badgeClasse = 'badge-pos';
+        statusTexto = '🔥 APOSTA DE VALOR (+EV)';
+      } else if (ehEmpate) {
+        classe = 'ev-negativo';
+        badgeClasse = 'badge-neg';
+        statusTexto = '⚠️ ZONA DE EMPATE (SEM VALOR)';
+      }
 
       let explicacao = '';
-      if (ehPositivo) {
-        explicacao = `A banca está pagando <b>${oddA.toFixed(2)}</b> em algo que custa <b>${oddJusta.toFixed(2)}</b>. Você tem vantagem matemática sobre a casa nesse bilhete.`;
+      if (ehLucrativo) {
+        explicacao = `Excelente! A banca te paga <b>${oddA.toFixed(2)}</b>, superando a odd justa (<b>${oddJusta.toFixed(2)}</b>) e a meta de lucro (<b>${oddIdealLucro.toFixed(2)}</b>). Essa entrada tem lucro matemático a longo prazo.`;
+      } else if (ehEmpate) {
+        explicacao = `A odd <b>${oddA.toFixed(2)}</b> empata com o preço justo (<b>${oddJusta.toFixed(2)}</b>), mas não compensa a variância. Para ter lucro real no bolso, busque odds a partir de <b>${oddIdealLucro.toFixed(2)}</b>.`;
       } else {
-        explicacao = `O preço mínimo justo para aceitar era <b>${oddJusta.toFixed(2)}</b>, mas a banca está te pagando apenas <b>${oddA.toFixed(2)}</b>. No longo prazo, essa aposta entrega dinheiro à casa.`;
+        explicacao = `Preço ruim. A banca te paga apenas <b>${oddA.toFixed(2)}</b>. O preço neutro de empate seria <b>${oddJusta.toFixed(2)}</b> e a entrada com lucro real só começa em <b>${oddIdealLucro.toFixed(2)}</b> ou mais.`;
       }
 
       resDiv.className = `card res-box ${classe}`;
@@ -155,9 +185,15 @@
           <span class="res-value" style="color: #FACC15;">${juice.toFixed(2)}%</span>
         </div>
         <div class="res-line">
-          <span>Odd Justa Neutra:</span>
-          <span class="res-value" style="color: #FFFFFF;">${oddJusta.toFixed(2)}</span>
+          <span>Odd Justa (Empate):</span>
+          <span class="res-value" style="color: #a1a1aa;">${oddJusta.toFixed(2)}</span>
         </div>
+        
+        <div class="target-box">
+          <div class="target-label">🎯 ENTRADA IDEAL (+EV):</div>
+          <div class="target-val">${oddIdealLucro.toFixed(2)}+</div>
+        </div>
+
         <div class="veredito-badge ${badgeClasse}">${statusTexto}</div>
         <p class="explicacao">${explicacao}</p>
       `;
