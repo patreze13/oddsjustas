@@ -6,63 +6,109 @@
   <title>Patreze Odds Justas</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background-color: #0b0f19; color: #f1f5f9; padding: 20px; display: flex; flex-direction: column; min-height: 100vh; }
-    header { text-align: center; margin-bottom: 24px; padding-top: 10px; }
-    h1 { font-size: 1.5rem; font-weight: 800; color: #38bdf8; letter-spacing: -0.5px; }
-    p.subtitle { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
+    body { background-color: #000000; color: #f1f5f9; padding: 18px; display: flex; flex-direction: column; min-height: 100vh; }
     
-    .card { background-color: #1e293b; border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #334155; }
+    header { text-align: center; margin-bottom: 20px; }
+    .logo-header { max-width: 190px; height: auto; display: block; margin: 0 auto; }
+    p.subtitle { font-size: 0.78rem; color: #71717a; margin-top: 6px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+    
+    .card { background-color: #0d0d11; border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #1f1f28; }
     .input-group { margin-bottom: 14px; }
-    label { display: block; font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
-    span.hint { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; }
-    input { width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 12px; color: #fff; font-size: 1.1rem; font-weight: bold; outline: none; }
-    input:focus { border-color: #38bdf8; }
+    label { display: block; font-size: 0.88rem; font-weight: 700; color: #e4e4e7; margin-bottom: 3px; }
+    span.hint { display: block; font-size: 0.72rem; color: #a1a1aa; margin-bottom: 6px; }
     
-    button { width: 100%; background: #0284c7; color: #fff; border: none; border-radius: 10px; padding: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-top: 6px; }
-    button:active { background: #0369a1; }
+    input { 
+      width: 100%; 
+      background: #000000; 
+      border: 1.5px solid #27272a; 
+      border-radius: 8px; 
+      padding: 12px; 
+      color: #FACC15; 
+      font-size: 1.2rem; 
+      font-weight: 900; 
+      outline: none; 
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #FACC15; }
+    
+    button { 
+      width: 100%; 
+      background: linear-gradient(135deg, #FACC15, #EAB308); 
+      color: #000000; 
+      border: none; 
+      border-radius: 10px; 
+      padding: 15px; 
+      font-size: 1rem; 
+      font-weight: 900; 
+      cursor: pointer; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      margin-top: 6px; 
+    }
+    button:active { transform: scale(0.98); opacity: 0.9; }
 
-    #resultado { display: none; margin-top: 10px; }
-    .res-box { padding: 16px; border-radius: 12px; border: 1px solid transparent; }
-    .ev-positivo { background-color: rgba(22, 101, 52, 0.25); border-color: #22c55e; }
-    .ev-negativo { background-color: rgba(153, 27, 27, 0.25); border-color: #ef4444; }
+    #loading { display: none; text-align: center; padding: 24px 0; }
+    .spinner-logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 12px;
+      animation: pulsar 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes pulsar {
+      from { transform: scale(0.92); opacity: 0.7; }
+      to { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 10px #FACC15); }
+    }
+    #loading p { font-size: 0.85rem; color: #FACC15; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+
+    #resultado { display: none; margin-top: 4px; }
+    .res-box { padding: 18px; border-radius: 12px; border: 1.5px solid transparent; }
+    .ev-positivo { background-color: rgba(22, 101, 52, 0.2); border-color: #22c55e; }
+    .ev-negativo { background-color: rgba(153, 27, 27, 0.2); border-color: #ef4444; }
     
-    .res-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.95rem; }
-    .res-value { font-weight: 800; font-size: 1.1rem; }
-    .veredito-badge { text-align: center; padding: 10px; border-radius: 8px; font-weight: 800; font-size: 1rem; margin-top: 12px; text-transform: uppercase; }
-    .badge-pos { background: #15803d; color: #fff; }
-    .badge-neg { background: #b91c1c; color: #fff; }
-    .explicacao { font-size: 0.8rem; color: #cbd5e1; margin-top: 10px; line-height: 1.4; }
+    .res-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.92rem; }
+    .res-value { font-weight: 900; font-size: 1.15rem; }
+    
+    .veredito-badge { text-align: center; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 1.05rem; margin-top: 14px; text-transform: uppercase; }
+    .badge-pos { background: #15803d; color: #ffffff; }
+    .badge-neg { background: #b91c1c; color: #ffffff; }
+    .explicacao { font-size: 0.82rem; color: #cbd5e1; margin-top: 12px; line-height: 1.45; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Patreze Odds Justas</h1>
-    <p class="subtitle">Descubra o preço real e não pague taxa à toa</p>
+    <img src="logo.png" alt="Patreze Odds Justas" class="logo-header">
+    <p class="subtitle">Calculadora de Precificação Real</p>
   </header>
 
   <div class="card">
     <div class="input-group">
       <label>1. Sua Odd Escolhida</label>
-      <span class="hint">A aposta que você quer fazer (Ex: Over 4.5 a 1.70)</span>
-      <input type="number" step="0.01" id="oddA" placeholder="Ex: 1.70" inputmode="decimal">
+      <span class="hint">A cotação do seu palpite (Ex: Over 4.5 a 1.70)</span>
+      <input type="number" step="0.01" id="oddA" placeholder="1.70" inputmode="decimal">
     </div>
 
     <div class="input-group">
       <label>2. A Odd Contrária</label>
-      <span class="hint">O outro lado do mercado (Ex: Under 4.5 a 2.00)</span>
-      <input type="number" step="0.01" id="oddB" placeholder="Ex: 2.00" inputmode="decimal">
+      <span class="hint">O outro lado desse mesmo mercado (Ex: Under 4.5 a 2.00)</span>
+      <input type="number" step="0.01" id="oddB" placeholder="2.00" inputmode="decimal">
     </div>
 
-    <button onclick="calcular()">Analisar Bilhete</button>
+    <button onclick="iniciarCalculo()">Conferir Bilhete</button>
+  </div>
+
+  <div id="loading">
+    <img src="logo.png" class="spinner-logo" alt="Calculando">
+    <p>Calculando Precificação...</p>
   </div>
 
   <div id="resultado" class="card"></div>
 
   <script>
-    function calcular() {
+    function iniciarCalculo() {
       const oddA = parseFloat(document.getElementById('oddA').value);
       const oddB = parseFloat(document.getElementById('oddB').value);
+      const loading = document.getElementById('loading');
       const resDiv = document.getElementById('resultado');
 
       if (!oddA || !oddB || oddA <= 1 || oddB <= 1) {
@@ -70,19 +116,26 @@
         return;
       }
 
-      // Cálculo das probabilidades implícitas
+      resDiv.style.display = 'none';
+      loading.style.display = 'block';
+
+      setTimeout(() => {
+        loading.style.display = 'none';
+        executarAnalise(oddA, oddB);
+      }, 1200);
+    }
+
+    function executarAnalise(oddA, oddB) {
+      const resDiv = document.getElementById('resultado');
+
       const probA = (1 / oddA);
       const probB = (1 / oddB);
       const somaMercado = probA + probB;
 
-      // Taxa da casa (Juice)
       const juice = (somaMercado - 1) * 100;
-
-      // Probabilidade limpa e Odd Justa
       const probRealA = probA / somaMercado;
       const oddJusta = 1 / probRealA;
 
-      // Verificação de valor
       const ehPositivo = oddA >= oddJusta;
       const classe = ehPositivo ? 'ev-positivo' : 'ev-negativo';
       const badgeClasse = ehPositivo ? 'badge-pos' : 'badge-neg';
@@ -90,20 +143,20 @@
 
       let explicacao = '';
       if (ehPositivo) {
-        explicacao = `A casa está pagando <b>${oddA.toFixed(2)}</b> em algo que vale <b>${oddJusta.toFixed(2)}</b>. Você tem vantagem matemática real nessa entrada.`;
+        explicacao = `A banca está pagando <b>${oddA.toFixed(2)}</b> em algo que custa <b>${oddJusta.toFixed(2)}</b>. Você tem vantagem matemática sobre a casa nesse bilhete.`;
       } else {
-        explicacao = `O preço mínimo aceitável era <b>${oddJusta.toFixed(2)}</b>, mas a banca está te pagando só <b>${oddA.toFixed(2)}</b>. No longo prazo, essa aposta dá prejuízo.`;
+        explicacao = `O preço mínimo justo para aceitar era <b>${oddJusta.toFixed(2)}</b>, mas a banca está te pagando apenas <b>${oddA.toFixed(2)}</b>. No longo prazo, essa aposta entrega dinheiro à casa.`;
       }
 
       resDiv.className = `card res-box ${classe}`;
       resDiv.innerHTML = `
         <div class="res-line">
           <span>Taxa da Banca (Juice):</span>
-          <span class="res-value" style="color: #f59e0b;">${juice.toFixed(2)}%</span>
+          <span class="res-value" style="color: #FACC15;">${juice.toFixed(2)}%</span>
         </div>
         <div class="res-line">
           <span>Odd Justa Neutra:</span>
-          <span class="res-value" style="color: #38bdf8;">${oddJusta.toFixed(2)}</span>
+          <span class="res-value" style="color: #FFFFFF;">${oddJusta.toFixed(2)}</span>
         </div>
         <div class="veredito-badge ${badgeClasse}">${statusTexto}</div>
         <p class="explicacao">${explicacao}</p>
